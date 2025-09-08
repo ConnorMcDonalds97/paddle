@@ -4,6 +4,12 @@ import json
 import pprint
 import random
 
+'''
+API's used:
+1. openF1 for driver info
+2. jolpica-f1 for driver standings
+'''
+
 
 
 response = urlopen('https://api.openf1.org/v1/drivers')
@@ -15,12 +21,49 @@ selectedDriver = data[randomInt]
 
 pprint.pprint(selectedDriver)
 
-print(selectedDriver['full_name'])
+standingsApiCall = urlopen('https://api.jolpi.ca/ergast/f1/2025/constructorstandings')
 
-userGuess = input('guess the driver: ')
+standingsData = json.loads(standingsApiCall.read().decode('utf-8'))
 
-def similar(a,b):
-    return SequenceMatcher(None, a, b).ratio()
+constructorStandings = standingsData["MRData"]["StandingsTable"]["StandingsLists"][0]["ConstructorStandings"]
 
-if (similar(userGuess.lower() ,selectedDriver['full_name'].lower())) > 0.7:
-    print('yay!')
+constructorStandingsDict = {}
+'''
+This dictionary is of the format:
+{
+    'team_name': [position,points],
+    'team_name': [position,points],
+    .
+    .
+    .
+}
+'''
+
+# pprint.pprint(driverStandings)
+for constructor in constructorStandingsDict:
+    constructorStandingsDict[constructor["Constructor"]["constructorId"]] = [constructor["position"],constructor["points"] ]
+
+pprint.pprint(constructorStandingsDict)
+
+# print(selectedDriver['full_name'])
+
+# userGuess = input('guess the driver: ')
+
+# def similar(a,b):
+#     return SequenceMatcher(None, a, b).ratio()
+
+# gameWin = False
+
+# while (not gameWin):
+#     userGuess = input('guess the driver: ')
+
+#     if (similar(userGuess.lower() ,selectedDriver['full_name'].lower())) > 0.7:
+#         print('yay!')
+#         gameWin = True
+#     else:
+#         print('uh oh')
+#         print(selectedDriver['team_colour'])
+#         print(selectedDriver['team_name'])
+
+
+     
