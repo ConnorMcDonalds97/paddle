@@ -3,12 +3,16 @@ from difflib import SequenceMatcher
 import json
 import pprint
 import random
-
 '''
 API's used:
 1. openF1 for driver info
 2. jolpica-f1 for driver standings
 '''
+
+def printDriverInfo(driverDict):
+    print('Driver name: ' + driverDict["full_name"])
+    print('Driver team: ' + driverDict['team_name'])
+    print('Team Color: ' + driverDict['team_colour'] + '\n')
 
 
 
@@ -19,7 +23,7 @@ randomInt = random.randint(0,len(data))
 
 selectedDriver = data[randomInt]
 
-pprint.pprint(selectedDriver)
+printDriverInfo(selectedDriver)
 
 standingsApiCall = urlopen('https://api.jolpi.ca/ergast/f1/2025/constructorstandings')
 
@@ -40,7 +44,7 @@ This dictionary is of the format:
 '''
 
 # pprint.pprint(driverStandings)
-for constructor in constructorStandingsDict:
+for constructor in constructorStandings:
     constructorStandingsDict[constructor["Constructor"]["constructorId"]] = [constructor["position"],constructor["points"] ]
 
 pprint.pprint(constructorStandingsDict)
@@ -65,5 +69,3 @@ pprint.pprint(constructorStandingsDict)
 #         print(selectedDriver['team_colour'])
 #         print(selectedDriver['team_name'])
 
-
-     
