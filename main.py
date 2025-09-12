@@ -8,6 +8,8 @@ API's used:
 1. openF1 for driver info
 2. jolpica-f1 for driver standings
 '''
+def similar(a,b):
+    return SequenceMatcher(None, a, b).ratio()
 
 def printDriverInfo(driverDict):
     print('Driver name: ' + driverDict["full_name"])
@@ -16,14 +18,21 @@ def printDriverInfo(driverDict):
 
 
 
-response = urlopen('https://api.openf1.org/v1/drivers')
-data = json.loads(response.read().decode('utf-8'))
+response = urlopen('https://api.openf1.org/v1/drivers?session_key=latest')
+driverData = json.loads(response.read().decode('utf-8'))
 
-randomInt = random.randint(0,len(data))
+# for driver in driverData:
+#     driver["full_name"] = driver["full_name"].lower()
 
-selectedDriver = data[randomInt]
+pprint.pprint(driverData)
+
+randomInt = random.randint(0,len(driverData))
+
+selectedDriver = driverData[randomInt]
 
 printDriverInfo(selectedDriver)
+
+####################################################################################
 
 standingsApiCall = urlopen('https://api.jolpi.ca/ergast/f1/2025/constructorstandings')
 
@@ -47,14 +56,34 @@ This dictionary is of the format:
 for constructor in constructorStandings:
     constructorStandingsDict[constructor["Constructor"]["constructorId"]] = [constructor["position"],constructor["points"] ]
 
-pprint.pprint(constructorStandingsDict)
+# pprint.pprint(constructorStandingsDict)
 
-# print(selectedDriver['full_name'])
+print(selectedDriver['full_name'])
 
-# userGuess = input('guess the driver: ')
+userGuess = input('guess the driver: ')
 
-# def similar(a,b):
-#     return SequenceMatcher(None, a, b).ratio()
+print(userGuess.strip().lower())
+
+guessedDriver = 0
+lowercaseGuess = userGuess.lower()
+
+
+for drivers in driverData:
+
+    if (similar(lowercaseGuess, drivers['full_name'].lower()) > 0.9):
+        print("\n your guess:\n")
+        pprint.pprint(drivers)
+
+        print("\n the right driver:\n ")
+        pprint.pprint(selectedDriver)
+
+        break
+
+    
+'''
+TO DO WRITE CHECK WIN
+'''
+
 
 # gameWin = False
 
