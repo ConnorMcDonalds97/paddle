@@ -16,85 +16,87 @@ def printDriverInfo(driverDict):
     print('Driver team: ' + driverDict['team_name'])
     print('Team Color: ' + driverDict['team_colour'] + '\n')
 
+def checkWin (selectedDriver, guessedDriver):
+    nameCorrect = False
+    teamCorrect = False
+    colourCorrect = False
 
-
-response = urlopen('https://api.openf1.org/v1/drivers?session_key=latest')
-driverData = json.loads(response.read().decode('utf-8'))
-
-# for driver in driverData:
-#     driver["full_name"] = driver["full_name"].lower()
-
-pprint.pprint(driverData)
-
-randomInt = random.randint(0,len(driverData))
-
-selectedDriver = driverData[randomInt]
-
-printDriverInfo(selectedDriver)
-
-####################################################################################
-
-standingsApiCall = urlopen('https://api.jolpi.ca/ergast/f1/2025/constructorstandings')
-
-standingsData = json.loads(standingsApiCall.read().decode('utf-8'))
-
-constructorStandings = standingsData["MRData"]["StandingsTable"]["StandingsLists"][0]["ConstructorStandings"]
-
-constructorStandingsDict = {}
-'''
-This dictionary is of the format:
-{
-    'team_name': [position,points],
-    'team_name': [position,points],
-    .
-    .
-    .
-}
-'''
-
-# pprint.pprint(driverStandings)
-for constructor in constructorStandings:
-    constructorStandingsDict[constructor["Constructor"]["constructorId"]] = [constructor["position"],constructor["points"] ]
-
-# pprint.pprint(constructorStandingsDict)
-
-print(selectedDriver['full_name'])
-
-userGuess = input('guess the driver: ')
-
-print(userGuess.strip().lower())
-
-guessedDriver = 0
-lowercaseGuess = userGuess.lower()
-
-
-for drivers in driverData:
-
-    if (similar(lowercaseGuess, drivers['full_name'].lower()) > 0.9):
-        print("\n your guess:\n")
-        pprint.pprint(drivers)
-
-        print("\n the right driver:\n ")
-        pprint.pprint(selectedDriver)
-
-        break
-
+    if selectedDriver['full_name'] == guessedDriver['full_name']:
+        nameCorrect = True
+        print('Name: Correct')
+    else:
+        print('Name: Incorrect')
     
-'''
-TO DO WRITE CHECK WIN
-'''
+    if selectedDriver['team_name'] == guessedDriver['team_name']:
+        teamCorrect = True
+        print('Team: Correct')
+    else:
+        print('Team: Incorrect')
+
+    if selectedDriver['team_colour'] == guessedDriver['team_colour']:
+        colourCorrect = True
+        print('Colour: Correct')
+    else:
+        print('Colour: Incorrect')
+
+def main():
+    response = urlopen('https://api.openf1.org/v1/drivers?session_key=latest')
+    driverData = json.loads(response.read().decode('utf-8'))
+
+    # for driver in driverData:
+    #     driver["full_name"] = driver["full_name"].lower()
+
+    # pprint.pprint(driverData)
+
+    randomInt = random.randint(0,len(driverData))
+
+    selectedDriver = driverData[randomInt]
+
+    printDriverInfo(selectedDriver)
+
+    ####################################################################################
+
+    standingsApiCall = urlopen('https://api.jolpi.ca/ergast/f1/2025/constructorstandings')
+
+    standingsData = json.loads(standingsApiCall.read().decode('utf-8'))
+
+    constructorStandings = standingsData["MRData"]["StandingsTable"]["StandingsLists"][0]["ConstructorStandings"]
+
+    constructorStandingsDict = {}
+    '''
+    This dictionary is of the format:
+    {
+        'team_name': [position,points],
+        'team_name': [position,points],
+        .
+        .
+        .
+    }
+    '''
+
+    # pprint.pprint(driverStandings)
+    for constructor in constructorStandings:
+        constructorStandingsDict[constructor["Constructor"]["constructorId"]] = [constructor["position"],constructor["points"] ]
+
+    pprint.pprint(constructorStandingsDict)
+
+    print(selectedDriver['full_name'])
+
+    userGuess = input('guess the driver: ')
+
+    print('\nguess: ', userGuess.strip().lower())
+
+    guessedDriver = 0
+    lowercaseGuess = userGuess.lower()
 
 
-# gameWin = False
+    for drivers in driverData:
 
-# while (not gameWin):
-#     userGuess = input('guess the driver: ')
+        if (similar(lowercaseGuess, drivers['full_name'].lower()) > 0.9):
 
-#     if (similar(userGuess.lower() ,selectedDriver['full_name'].lower())) > 0.7:
-#         print('yay!')
-#         gameWin = True
-#     else:
-#         print('uh oh')
-#         print(selectedDriver['team_colour'])
-#         print(selectedDriver['team_name'])
+            checkWin(selectedDriver,drivers)
 
+            break
+
+if __name__ == '__main__':
+    main()
