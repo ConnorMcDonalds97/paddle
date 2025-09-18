@@ -16,7 +16,7 @@ def printDriverInfo(driverDict):
     print('Driver team: ' + driverDict['team_name'])
     print('Team Color: ' + driverDict['team_colour'] + '\n')
 
-def checkWin (selectedDriver, guessedDriver):
+def checkWin (selectedDriver, guessedDriver, constructorStandings):
     nameCorrect = False
     teamCorrect = False
     colourCorrect = False
@@ -31,13 +31,61 @@ def checkWin (selectedDriver, guessedDriver):
         teamCorrect = True
         print('Team: Correct')
     else:
-        print('Team: Incorrect')
+        result = checkTeam(selectedDriver, guessedDriver, constructorStandings)
+        if result == 0:
+            print('Team: Incorrect | ^')
+        else:
+            print('Team: Incorrect | v')
 
     if selectedDriver['team_colour'] == guessedDriver['team_colour']:
         colourCorrect = True
         print('Colour: Correct')
     else:
         print('Colour: Incorrect')
+
+def checkTeam(selectedDriver, guessedDriver, standings):
+    '''
+    Returns 0 if correct team is better, 1 if the correct team is worse
+    '''
+    correctTeam = selectedDriver['team_name']
+    guessedTeam = guessedDriver['team_name']
+    correctTeamRank = int(standings[correctTeam][0])
+    guessedTeamRank = int(standings[guessedTeam][0])
+
+    print('correct team: ', correctTeamRank)
+    print('guessed team: ', guessedTeamRank)
+
+
+    if correctTeamRank > guessedTeamRank:
+        return 1
+    else:
+        return 0
+
+def map_constructor_names(constructor_standings, driver_data):
+    # Build a mapping from lowercase constructorId to team_name from driver info
+    team_map = {}
+    for driver in driver_data:
+        team_name = driver.get("team_name")
+        if team_name:
+            key = team_name.strip().lower().replace(" ", "_").replace("-", "_")
+            team_map[key] = team_name
+
+    # Special cases for known mismatches
+    team_map["rb"] = "Racing Bulls"
+    team_map["sauber"] = "Kick Sauber"
+    team_map["alfa_romeo"] = "Alfa Romeo"
+    team_map["haas"] = "Haas F1 Team"
+    team_map["alphatauri"] = "AlphaTauri"
+    team_map['red_bull'] = 'Red Bull Racing'
+
+    new_standings = {}
+    for constructor_id, value in constructor_standings.items():
+        # Try to find the matching team name
+        team_name = team_map.get(constructor_id, constructor_id)
+        new_standings[team_name] = value
+    return new_standings
+
+    
 
 def main():
     response = urlopen('https://api.openf1.org/v1/drivers?session_key=latest')
@@ -48,7 +96,7 @@ def main():
 
     # pprint.pprint(driverData)
 
-    randomInt = random.randint(0,len(driverData))
+    randomInt = random.randint(0,len(driverData)-1)
 
     selectedDriver = driverData[randomInt]
 
@@ -78,6 +126,8 @@ def main():
     for constructor in constructorStandings:
         constructorStandingsDict[constructor["Constructor"]["constructorId"]] = [constructor["position"],constructor["points"] ]
 
+    constructorStandingsDict = map_constructor_names(constructorStandingsDict, driverData)
+
     pprint.pprint(constructorStandingsDict)
 
     print(selectedDriver['full_name'])
@@ -94,7 +144,7 @@ def main():
 
         if (similar(lowercaseGuess, drivers['full_name'].lower()) > 0.9):
 
-            checkWin(selectedDriver,drivers)
+            checkWin(selectedDriver,drivers, constructorStandingsDict)
 
             break
 
