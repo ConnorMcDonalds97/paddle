@@ -196,14 +196,21 @@ function handleGuess() {
     if (win) return;
     const userGuess = document.getElementById('guess-input').value.trim().toLowerCase();
     let found = false;
+    let bestMatch = null;
+    let bestScore = 0;
     for (const driver of driverData) {
-        if (similar(userGuess, driver.full_name.toLowerCase()) > 0.9) {
-            win = checkWin(selectedDriver, driver, constructorStandingsDict);
-            document.getElementById('result').innerHTML = win ? 'You win!' : 'Try again!';
-            renderResultSquares(selectedDriver, driver, constructorStandingsDict);
-            found = true;
-            break;
+        const score = similar(userGuess, driver.full_name.toLowerCase());
+        if (score > bestScore) {
+            bestScore = score;
+            bestMatch = driver;
         }
+    }
+    // Accept the best match if similarity is above a reasonable threshold (e.g., 0.6)
+    if (bestMatch && bestScore > 0.6) {
+        win = checkWin(selectedDriver, bestMatch, constructorStandingsDict);
+        document.getElementById('result').innerHTML = win ? 'You win!' : 'Try again!';
+        renderResultSquares(selectedDriver, bestMatch, constructorStandingsDict);
+        found = true;
     }
     if (!found) {
         document.getElementById('result').innerHTML = 'No matching driver found.';
