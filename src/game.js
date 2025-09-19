@@ -132,6 +132,8 @@ function startGame() {
 
 function renderResultSquares(selectedDriver, guessedDriver, constructorStandings) {
     const squaresContainer = document.getElementById('result-squares');
+    const hintContainer = document.getElementById('hint-div');
+
     // Create a row container for this guess
     const row = document.createElement('div');
     row.style.display = 'flex';
@@ -185,6 +187,9 @@ function renderResultSquares(selectedDriver, guessedDriver, constructorStandings
 
     // Append this row to the container (history)
     squaresContainer.appendChild(row);
+    hint-div.appendChild(squaresContainer);
+
+    
 }
 
 // Update handleGuess to call renderResultSquares

@@ -47,9 +47,19 @@ body {
     margin: 16px;
 }
 
+#hint-div {
+    display: flex;
+    flex-direction: column;
+}
+
+#result-squares {
+    display: flex;
+    flex-direction: column;
+    
+}
 /* Wordle-style squares */
 .result-square {
-    width: 40px;
+    width: 100px;
     height: 40px;
     border-radius: 8px;
     display: inline-block;
@@ -61,8 +71,7 @@ body {
     margin-right: 16px;
     background-color: #555;
     border: 2px solid #222;
-    display: flex;
-    flex-direction: column;
+    
 }
 .result-square.correct {
     background-color: #4caf50;
@@ -77,4 +86,5 @@ body {
     background-color: #757575;
     border-color: #333;
 }
+
 
