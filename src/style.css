@@ -57,9 +57,9 @@ body {
     flex-direction: column;
     
 }
-/* Wordle-style squares */
+
 .result-square {
-    width: 100px;
+    width: 125px;
     height: 40px;
     border-radius: 8px;
     display: inline-block;
@@ -71,20 +71,49 @@ body {
     margin-right: 16px;
     background-color: #555;
     border: 2px solid #222;
-    
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
 }
 .result-square.correct {
     background-color: #4caf50;
-    border-color: #388e3c;
-}
-.result-square.close {
-    background-color: #ffd600;
-    color: #222;
-    border-color: #c7b800;
 }
 .result-square.incorrect {
     background-color: #757575;
-    border-color: #333;
+}
+
+.result-arrow {
+    font-size: 28px;
+    margin-left: 6px;
+    font-weight: bold;
+    vertical-align: middle;
+    display: flex;
+    align-items: center;
+}
+.result-arrow.up {
+    color: #4caf50;
+}
+.result-arrow.down {
+    color: #e53935;
+}
+
+/* Fallback: CSS triangles */
+.result-triangle {
+    width: 0;
+    height: 0;
+    margin-left: 8px;
+    display: inline-block;
+}
+.result-triangle.up {
+    border-left: 12px solid transparent;
+    border-right: 12px solid transparent;
+    border-bottom: 20px solid #4caf50;
+}
+.result-triangle.down {
+    border-left: 12px solid transparent;
+    border-right: 12px solid transparent;
+    border-top: 20px solid #e53935;
 }
 
 

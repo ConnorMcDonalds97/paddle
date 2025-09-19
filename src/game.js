@@ -132,7 +132,6 @@ function startGame() {
 
 function renderResultSquares(selectedDriver, guessedDriver, constructorStandings) {
     const squaresContainer = document.getElementById('result-squares');
-    const hintContainer = document.getElementById('hint-div');
 
     // Create a row container for this guess
     const row = document.createElement('div');
@@ -148,31 +147,34 @@ function renderResultSquares(selectedDriver, guessedDriver, constructorStandings
     nameLabel.style.fontSize = '18px';
     row.appendChild(nameLabel);
 
-    // Name
-    let nameClass = 'incorrect';
-    if (selectedDriver.full_name === guessedDriver.full_name) {
-        nameClass = 'correct';
-    } else if (similar(selectedDriver.full_name, guessedDriver.full_name) > 0.7) {
-        nameClass = 'close';
-    }
-    const nameSquare = document.createElement('div');
-    nameSquare.className = `result-square ${nameClass}`;
-    nameSquare.textContent = 'Name';
-    row.appendChild(nameSquare);
-
     // Team
     let teamClass = 'incorrect';
+    let arrowType = null; // 'up' or 'down'
     if (selectedDriver.team_name === guessedDriver.team_name) {
         teamClass = 'correct';
     } else {
         const teamResult = checkTeam(selectedDriver, guessedDriver, constructorStandings);
         if (teamResult === 0) {
-            teamClass = 'close'; // correct team is better
+            arrowType = 'up';
+        } else {
+            arrowType = 'down';
         }
     }
     const teamSquare = document.createElement('div');
     teamSquare.className = `result-square ${teamClass}`;
-    teamSquare.textContent = 'Team';
+    // Label
+    const teamLabel = document.createElement('span');
+    teamLabel.textContent = 'Team';
+    teamLabel.style.display = 'inline-block';
+    teamLabel.style.marginRight = arrowType ? '8px' : '0';
+    teamSquare.appendChild(teamLabel);
+    // Arrow
+    if (arrowType) {
+        const arrow = document.createElement('span');
+        arrow.className = `result-arrow ${arrowType}`;
+        arrow.textContent = arrowType === 'up' ? '↑' : '↓';
+        teamSquare.appendChild(arrow);
+    }
     row.appendChild(teamSquare);
 
     // Colour
@@ -187,9 +189,6 @@ function renderResultSquares(selectedDriver, guessedDriver, constructorStandings
 
     // Append this row to the container (history)
     squaresContainer.appendChild(row);
-    hint-div.appendChild(squaresContainer);
-
-    
 }
 
 // Update handleGuess to call renderResultSquares
