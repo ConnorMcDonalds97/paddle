@@ -143,8 +143,14 @@ function renderResultSquares(selectedDriver, guessedDriver, constructorStandings
     const nameLabel = document.createElement('span');
     nameLabel.textContent = guessedDriver.full_name;
     nameLabel.style.marginRight = '12px';
-    nameLabel.style.color = '#fff';
     nameLabel.style.fontSize = '18px';
+    // Color green if guessed driver is correct
+    if (selectedDriver.full_name === guessedDriver.full_name) {
+        nameLabel.style.color = 'green';
+        nameLabel.style.fontWeight = 'bold';
+    } else {
+        nameLabel.style.color = '#fff';
+    }
     row.appendChild(nameLabel);
 
     // Team
