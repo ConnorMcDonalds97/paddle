@@ -146,7 +146,7 @@ function renderResultSquares(selectedDriver, guessedDriver, constructorStandings
     nameLabel.style.fontSize = '18px';
     // Color green if guessed driver is correct
     if (selectedDriver.full_name === guessedDriver.full_name) {
-        nameLabel.style.color = 'green';
+        nameLabel.style.color = '#2fb602ff';
         nameLabel.style.fontWeight = 'bold';
     } else {
         nameLabel.style.color = '#fff';
